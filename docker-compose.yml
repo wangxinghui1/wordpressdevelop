@@ -1,0 +1,57 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql-container
+    environment:
+      - MYSQL_DATABASE=wpdb
+      - MYSQL_USER=wpuser
+      - MYSQL_PASSWORD=wpsecret
+      - MYSQL_ROOT_PASSWORD=wordpress
+    volumes:
+      - wpdata:/var/lib/mysql
+    networks:
+      - wpnet # 添加网络配置
+    restart: on-failure
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin-container
+    depends_on:
+      - mysql
+    environment:
+      - PMA_HOST=mysql
+      - PMA_USER=wpuser
+      - PMA_NAME=wpdb
+      - PMA_PASSWORD=wpsecret
+    networks:
+      - wpnet # 添加网络配置
+    ports:
+      - "8080:80"
+
+  wordpress:
+    image: wordpress
+    container_name: wordpress-container
+    depends_on:
+      - mysql
+    environment:
+      - WORDPRESS_DB_HOST=mysql
+      - WORDPRESS_DB_NAME=wpdb
+      - WORDPRESS_DB_USER=wpuser
+      - WORDPRESS_DB_PASSWORD=wpsecret
+    volumes:
+      - wpfiles:/var/www/html
+      - ./wp-content:/var/www/html/wp-content
+    ports:
+      - "8001:80"
+    networks:
+      - wpnet # 添加网络配置
+    restart: on-failure
+
+volumes:
+  wpdata:
+  wpfiles:
+
+
+networks:
+  wpnet: # 定义自定义网络

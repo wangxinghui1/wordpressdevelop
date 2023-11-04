@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .tab {
+            display: flex;
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+
+        .tab button:hover {
+            background-color: #ddd;
+        }
+
+        .tab button.active {
+            background-color: #ccc;
+            border-bottom:3px solid black;
+        }
+
+        .tabcontent {
+            padding: 6px 12px;
+            border: 0px solid black;
+            border-top: none;
+            border-collapse: collapse;
+            margin: 0 auto;
+        }
+
+        td, th {
+            border: 0.3px solid black;
+            border-top: none;
+            text-align: center;
+            padding: 9px;
+        }
+    </style>
+</head>
+<body>
+<div class="tab">
+    <button class="tablinks" onclick="openCity(event,'US')">US</button>
+    <button class="tablinks" onclick="openCity(event,'CANADA')">CANADA</button>
+    <button class="tablinks" onclick="openCity(event,'OTHER')">OTHER</button>
+</div>
+
+<script>
+    function generateRow(order, deliveryService, cost, estimatedDeliveryTime) {
+        return `
+            <tr>
+                <td>${order}</td>
+                <td>${deliveryService}</td>
+                <td>${cost}</td>
+                <td>${estimatedDeliveryTime}</td>
+            </tr>
+        `;
+    }
+
+    function generateTable(id, row1, row2) {
+        return `
+            <table id="${id}" class="tabcontent" style="margin-left:auto; margin-right:auto;" hidden>
+                <tr>
+                    <th>Order</th>
+                    <th>Delivery Service</th>
+                    <th>Cost</th>
+                    <th>Estimated Delivery Time</th>
+                </tr>
+                ${row1}
+                ${row2}
+            </table>
+        `;
+    }
+
+    var row1 = generateRow("Over $105", "Standard Ground", "FREE", "15-25 Business Days");
+    var row2 = generateRow("Under $105", "Standard Ground", "$12.99", "15-25 Business Days");
+
+    document.querySelector('.tab').insertAdjacentHTML('afterend', generateTable("US", row1, row2));
+    document.querySelector('.tab').insertAdjacentHTML('afterend', generateTable("CANADA", row1, row2));
+    document.querySelector('.tab').insertAdjacentHTML('afterend', generateTable("OTHER", row1, row2));
+
+    function openCity(evt, cityName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].hidden = true;
+        }
+
+        tablinks = document.getElementsByClassName("tablinks");
+
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+        document.getElementById(cityName).hidden = false;
+
+        evt.currentTarget.className += " active";
+    }
+
+    // Simulate a click on the "US" button
+    window.onload = function() {
+        document.querySelector('button[onclick="openCity(event,\'US\')"]').click();
+    }
+</script>
+</body>
+</html>
